@@ -15,12 +15,11 @@ radius, pheda = sp.symbols("radius pheda")
 class HydrogenAtom:
     def __init__(self, n, m, l, debugger = True):
         super(HydrogenAtom, self).__init__()
-        self.n, self.m, self.l = n, m, l
-        print(r"[+] Hydrogen atom model created!"*debugger, sep='')
+        self.n, self.m, self.l = n, m, l    
         self.debugger = debugger
         self.function: int 
         self.supportsObjects = False
-            
+    
     def nthDerivative(self, n, func):
         if n <= 1: return sp.diff(func)
         return self.nthDerivative(n-1, sp.diff(func))
@@ -32,7 +31,7 @@ class HydrogenAtom:
 
     def sphericalArmonic(self, m, l):
         negative = -1 ** ( ( abs(m) + m ) / 2 )
-        first_fact = np.sqrt( ( (2*l +1) / 4*np.pi) * self.factorial (l - abs(m)) / self.factorial (l + abs(m)) ) 
+        first_fact = np.sqrt( ( (2*l +1)/(4*np.pi) ) * self.factorial (l - abs(m)) / self.factorial (l + abs(m)) ) 
         res = first_fact * negative * sp.assoc_legendre(abs(m), l, sp.cos(pheda))
         del negative, first_fact
         
@@ -41,16 +40,16 @@ class HydrogenAtom:
     #ritorna il fattore di normalizzazione 
     def normalizationFactor(self, n ,l):
         first_term = (2/(a_0*n+1e-7))**3
-        second_term = self.factorial(n - l -1)/( 2*n * (self.factorial(n+l))**3 +1e-7)
+        second_term = self.factorial(n - l -1)/( 2*n * (self.factorial(n+l)))
         return np.sqrt(first_term*second_term)
 
 
     def RadialFunction(self, n,l):
         p = 2*radius / (n*a_0+1e-7)
-        return -self.normalizationFactor(n,l) * (p)**l * np.e ** (-p/2) * sp.assoc_laguerre(n-l+1, 2*l+1, 2*p)
+        return self.normalizationFactor(n,l) * (p)**l * (np.e ** (-p/2)) * sp.assoc_laguerre(n-l+1, 2*l+1, p)
 
     def psi(self, angle, r):
-        return abs(self.function.subs(pheda, angle).subs(radius, r).evalf())**2
+        return abs(self.function.subs(pheda, angle).subs(radius, r).evalf())
 
     def plot(self, resolution, size = 2e-3, simType= '2d') -> None:
         if simType != '2d': return self.plot3d(resolution, size)
