@@ -4,7 +4,12 @@ class Simulation(object):
 		print("[!] Debugger is on by default. To turn it off specify \"debugger = False\" in the Simualtion object declaration"*debugger)
 		self.debugger = debugger
 		self.model, self.type, self.mode = model, simType, mode 
-		self.start = lambda: self.model.plot(resolution, size)
+		
+		self.start = lambda: self.model.plot(resolution, size) 
+
+	def addObject(self, Object):
+		assert self.model.supportsObjects, 'The selected model {type(self.model)} does not support objects.'
+		self.model.addObject(obj)
 
 	def setModel(self, newModel:str):
 		if not newModel: raise TypeError("Can't set simulation model to None")
